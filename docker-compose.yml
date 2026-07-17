@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: complaint_db
+    restart: always
+    environment:
+      POSTGRES_DB: complaint_db
+      POSTGRES_USER: Ourteam
+      POSTGRES_PASSWORD: root1234
+    ports:
+      - "5432:5432"
+    volumes:
+      - complaint_data:/var/lib/postgresql/data
+
+volumes:
+  complaint_data:

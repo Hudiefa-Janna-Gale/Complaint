@@ -1,0 +1,25 @@
+server:
+  port: 6000
+
+spring:
+  application:
+    name: Complaint
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/complaint_db
+    username: Ourteam
+    password: root1234
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  sql:
+    init:
+      mode: never
