@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getUser, clearUser } from "../auth.js";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthContext.jsx";
+import ThemeToggle from "../components/ThemeToggle.jsx";
 import SubmitFeedback from "./user/SubmitFeedback.jsx";
 import MyFeedbacks from "./user/MyFeedbacks.jsx";
 import Notifications from "./user/Notifications.jsx";
@@ -16,20 +17,21 @@ const userTabs = [
 
 const adminTabs = [
   { key: "allFeedbacks", label: "All Feedbacks" },
+  { key: "notifications", label: "Notifications" },
   { key: "departments", label: "Departments" },
   { key: "users", label: "Users" },
 ];
 
 function Dashboard() {
   const navigate = useNavigate();
-  const user = getUser();
+  const { user, logout } = useAuth();
   const isAdmin = user.role === "ADMIN";
   const tabs = isAdmin ? adminTabs : userTabs;
   const [active, setActive] = useState(tabs[0].key);
 
-  function handleLogout() {
-    clearUser();
-    navigate("/");
+  async function handleLogout() {
+    await logout();
+    navigate("/", { replace: true });
   }
 
   return (
@@ -56,6 +58,10 @@ function Dashboard() {
             </button>
           ))}
         </nav>
+        <ThemeToggle className="sidebar-toggle" />
+        <Link to="/" className="sidebar-back">
+          ← Back to home
+        </Link>
         <button className="sidebar-logout" onClick={handleLogout}>
           Logout
         </button>

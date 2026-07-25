@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import team.Complaint.domains.DTO.RequestDto.FeedbackRequestDTO;
 import team.Complaint.domains.DTO.ResponseDto.FeedbackResponseDTO;
+import team.Complaint.domains.Enum.FeedbackStatus;
+import team.Complaint.domains.Enum.Roles;
 import team.Complaint.domains.Model.DepartMent;
 import team.Complaint.domains.Model.Feedback;
 import team.Complaint.domains.Model.Notification;
@@ -45,6 +47,31 @@ public class FeedbackService {
         notification.setTitle("Feedback Received");
         notification.setMessage("Your feedback '" + savedFeedback.getTitle() + "' was submitted successfully");
         notification.setUser(user);
+        notificationRepository.save(notification);
+
+        for (User admin : userRepository.findByRole(Roles.ADMIN)) {
+            Notification adminNotification = new Notification();
+            adminNotification.setTitle("New Complaint");
+            adminNotification.setMessage("New complaint '" + savedFeedback.getTitle() + "' submitted by "
+                    + user.getFullName() + " (" + department.getDepName() + ")");
+            adminNotification.setUser(admin);
+            notificationRepository.save(adminNotification);
+        }
+
+        return FeedbackResponseDTO.from(savedFeedback);
+    }
+
+    public FeedbackResponseDTO resolveFeedback(Long id) {
+        Feedback feedback = feedbackRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Feedback not found"));
+
+        feedback.setStatus(FeedbackStatus.RESOLVED);
+        Feedback savedFeedback = feedbackRepository.save(feedback);
+
+        Notification notification = new Notification();
+        notification.setTitle("Complaint Resolved");
+        notification.setMessage("Your complaint '" + savedFeedback.getTitle() + "' has been resolved");
+        notification.setUser(savedFeedback.getUser());
         notificationRepository.save(notification);
 
         return FeedbackResponseDTO.from(savedFeedback);

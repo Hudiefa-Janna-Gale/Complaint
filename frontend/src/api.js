@@ -1,28 +1,21 @@
-const BASE_URL = "http://localhost:6000/api";
+import axios from "axios";
 
-async function request(path, options) {
-  const res = await fetch(BASE_URL + path, options);
-  const text = await res.text();
-  let data;
-  try {
-    data = JSON.parse(text);
-  } catch {
-    data = text;
+const client = axios.create({
+  baseURL: "http://localhost:8081/api",
+  withCredentials: true,
+});
+
+client.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    const message = error.response?.data?.message || "Something went wrong";
+    return Promise.reject(new Error(message));
   }
-  if (!res.ok) {
-    throw new Error(data && data.message ? data.message : "Something went wrong");
-  }
-  return data;
-}
+);
 
 export const api = {
-  get: (path) => request(path),
-  post: (path, body) =>
-    request(path, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    }),
-  put: (path) => request(path, { method: "PUT" }),
-  del: (path) => request(path, { method: "DELETE" }),
+  get: (path) => client.get(path).then((res) => res.data),
+  post: (path, body) => client.post(path, body).then((res) => res.data),
+  put: (path, body) => client.put(path, body).then((res) => res.data),
+  del: (path) => client.delete(path).then((res) => res.data),
 };

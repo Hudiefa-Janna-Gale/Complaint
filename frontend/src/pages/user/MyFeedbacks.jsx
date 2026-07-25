@@ -27,7 +27,16 @@ function MyFeedbacks({ user }) {
             <div className="card feedback-card" key={fb.feedbackId}>
               <div className="feedback-header">
                 <h3>{fb.title}</h3>
-                <span className="badge">{fb.departmentName}</span>
+                <div>
+                  <span className="badge">{fb.departmentName}</span>{" "}
+                  <span
+                    className={`badge ${
+                      fb.status === "RESOLVED" ? "badge-light" : ""
+                    }`}
+                  >
+                    {fb.status === "RESOLVED" ? "Resolved" : "Pending"}
+                  </span>
+                </div>
               </div>
               <p>{fb.message}</p>
               <small>{new Date(fb.createdAt).toLocaleString()}</small>

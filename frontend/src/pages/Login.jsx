@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { api } from "../api.js";
-import { setUser } from "../auth.js";
+import { useAuth, roleHome } from "../AuthContext.jsx";
 
 function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -15,9 +15,8 @@ function Login() {
     setError("");
     setLoading(true);
     try {
-      const user = await api.post("/auth/login", { email, password });
-      setUser(user);
-      navigate("/dashboard");
+      const user = await login(email, password);
+      navigate(roleHome(user), { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -28,6 +27,7 @@ function Login() {
   return (
     <div className="auth-page">
       <div className="auth-card">
+        <Link to="/" className="auth-back">← Back to home</Link>
         <Link to="/" className="auth-logo">
           Complaint<span>Hub</span>
         </Link>

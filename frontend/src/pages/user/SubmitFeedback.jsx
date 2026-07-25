@@ -66,7 +66,7 @@ function SubmitFeedback({ user }) {
             <option value="">Select a department</option>
             {departments.map((dep) => (
               <option key={dep.id} value={dep.id}>
-                {dep.DepName}
+                {dep.depName}
               </option>
             ))}
           </select>

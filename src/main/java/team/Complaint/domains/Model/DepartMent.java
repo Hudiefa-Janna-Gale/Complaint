@@ -19,6 +19,6 @@ public class DepartMent {
     private Long id;
 
     @NotBlank(message = "department name is required..!")
-    private String DepName;
+    private String depName;
 
 }

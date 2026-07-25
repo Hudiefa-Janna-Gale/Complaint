@@ -2,6 +2,7 @@ package team.Complaint.domains.DTO.ResponseDto;
 
 import java.time.LocalDateTime;
 
+import team.Complaint.domains.Enum.FeedbackStatus;
 import team.Complaint.domains.Model.Feedback;
 
 public record FeedbackResponseDTO(
@@ -10,6 +11,7 @@ public record FeedbackResponseDTO(
     String message,
     String userFullName,
     String departmentName,
+    FeedbackStatus status,
     LocalDateTime createdAt
 ) {
 
@@ -20,6 +22,7 @@ public record FeedbackResponseDTO(
             feedback.getMessage(),
             feedback.getUser().getFullName(),
             feedback.getDepartment().getDepName(),
+            feedback.getStatus(),
             feedback.getCreatedAt()
         );
     }

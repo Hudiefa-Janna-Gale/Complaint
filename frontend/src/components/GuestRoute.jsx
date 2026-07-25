@@ -1,20 +1,18 @@
 import { Navigate } from "react-router-dom";
 import { useAuth, roleHome } from "../AuthContext.jsx";
 
-function ProtectedRoute({ children, role }) {
+// Guest-only pages (login / register). If the visitor is already logged in,
+// send them to their own dashboard instead of showing the auth page.
+function GuestRoute({ children }) {
   const { user, loading } = useAuth();
 
   if (loading) {
     return <div className="page-loading">Loading...</div>;
   }
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-  // Logged in but wrong role: send them to their own area.
-  if (role && user.role !== role) {
+  if (user) {
     return <Navigate to={roleHome(user)} replace />;
   }
   return children;
 }
 
-export default ProtectedRoute;
+export default GuestRoute;
