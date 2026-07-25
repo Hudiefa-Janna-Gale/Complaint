@@ -19,7 +19,7 @@ function Departments() {
     e.preventDefault();
     setError("");
     try {
-      await api.post("/departments", { DepName: name });
+      await api.post("/departments", { depName: name });
       setName("");
       load();
     } catch (err) {
@@ -58,7 +58,7 @@ function Departments() {
       <div className="card-list">
         {departments.map((dep) => (
           <div className="card department-card" key={dep.id}>
-            <span>{dep.DepName}</span>
+            <span>{dep.depName}</span>
             <button
               className="btn btn-small btn-danger"
               onClick={() => handleDelete(dep.id)}

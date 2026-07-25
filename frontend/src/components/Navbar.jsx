@@ -1,13 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
-import { getUser, clearUser } from "../auth.js";
+import { useAuth, roleHome } from "../AuthContext.jsx";
+import ThemeToggle from "./ThemeToggle.jsx";
 
 function Navbar() {
   const navigate = useNavigate();
-  const user = getUser();
+  const { user, logout } = useAuth();
 
-  function handleLogout() {
-    clearUser();
-    navigate("/");
+  async function handleLogout() {
+    await logout();
+    navigate("/", { replace: true });
   }
 
   return (
@@ -16,9 +17,10 @@ function Navbar() {
         Complaint<span>Hub</span>
       </Link>
       <div className="navbar-links">
+        <ThemeToggle />
         {user ? (
           <>
-            <Link to="/dashboard" className="btn btn-outline-light">
+            <Link to={roleHome(user)} className="btn btn-outline-light">
               Dashboard
             </Link>
             <button onClick={handleLogout} className="btn btn-light">

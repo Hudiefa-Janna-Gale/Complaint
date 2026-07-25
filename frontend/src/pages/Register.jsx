@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api.js";
+import { useAuth, roleHome } from "../AuthContext.jsx";
 
 function Register() {
   const navigate = useNavigate();
+  const { register } = useAuth();
   const [departments, setDepartments] = useState([]);
   const [form, setForm] = useState({
     fullName: "",
@@ -31,11 +33,11 @@ function Register() {
     setError("");
     setLoading(true);
     try {
-      await api.post("/auth/register", {
+      const user = await register({
         ...form,
         departmentId: Number(form.departmentId),
       });
-      navigate("/login");
+      navigate(roleHome(user), { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -46,6 +48,7 @@ function Register() {
   return (
     <div className="auth-page">
       <div className="auth-card">
+        <Link to="/" className="auth-back">← Back to home</Link>
         <Link to="/" className="auth-logo">
           Complaint<span>Hub</span>
         </Link>
@@ -97,7 +100,7 @@ function Register() {
             <option value="">Select a department</option>
             {departments.map((dep) => (
               <option key={dep.id} value={dep.id}>
-                {dep.DepName}
+                {dep.depName}
               </option>
             ))}
           </select>
